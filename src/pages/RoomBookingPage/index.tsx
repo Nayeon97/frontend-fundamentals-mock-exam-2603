@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Top, Spacing, Border, Text } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import { getRooms, getReservations, createReservation } from 'pages/remotes';
+import { MessageBanner } from 'components/MessageBanner';
 import axios from 'axios';
 import { useBookingFilter, type BookingFilter } from './useBookingFilter';
 import { findAvailableRooms, getAvailableFloors } from './findAvailableRooms';
@@ -98,17 +99,10 @@ export function RoomBookingPage() {
       </Top.Top03>
 
       {errorMessage && (
-        <div css={css`padding: 0 24px;`}>
+        <>
           <Spacing size={12} />
-          <div
-            css={css`
-              padding: 10px 14px; border-radius: 10px; background: ${colors.red50};
-              display: flex; align-items: center; gap: 8px;
-            `}
-          >
-            <Text typography="t7" fontWeight="medium" color={colors.red500}>{errorMessage}</Text>
-          </div>
-        </div>
+          <MessageBanner type="error" text={errorMessage} />
+        </>
       )}
 
       <Spacing size={24} />

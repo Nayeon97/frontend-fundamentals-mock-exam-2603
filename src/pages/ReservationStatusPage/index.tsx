@@ -6,6 +6,7 @@ import { Top, Spacing, Border, Button, Text } from '_tosslib/components';
 import { colors } from '_tosslib/constants/colors';
 import { getRooms, getReservations, getMyReservations } from 'pages/remotes';
 import { formatDate } from 'pages/constants';
+import { MessageBanner } from 'components/MessageBanner';
 import { ReservationTimeline } from './ReservationTimeline';
 import { MyReservationList } from './MyReservationList';
 
@@ -71,24 +72,10 @@ export function ReservationStatusPage() {
       <Spacing size={24} />
 
       {message && (
-        <div css={css`padding: 0 24px;`}>
-          <div
-            css={css`
-              padding: 10px 14px; border-radius: 10px;
-              background: ${message.type === 'success' ? colors.blue50 : colors.red50};
-              display: flex; align-items: center; gap: 8px;
-            `}
-          >
-            <Text
-              typography="t7"
-              fontWeight="medium"
-              color={message.type === 'success' ? colors.blue600 : colors.red500}
-            >
-              {message.text}
-            </Text>
-          </div>
+        <>
+          <MessageBanner type={message.type} text={message.text} />
           <Spacing size={12} />
-        </div>
+        </>
       )}
 
       <MyReservationList
