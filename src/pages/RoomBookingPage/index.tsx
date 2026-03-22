@@ -7,6 +7,7 @@ import { colors } from '_tosslib/constants/colors';
 import { getRooms, getReservations, createReservation } from 'pages/remotes';
 import axios from 'axios';
 import { useBookingFilter, type BookingFilter } from './useBookingFilter';
+import { findAvailableRooms, getAvailableFloors } from './findAvailableRooms';
 import { BookingFilterPanel } from './BookingFilterPanel';
 import { AvailableRoomList } from './AvailableRoomList';
 
@@ -35,25 +36,8 @@ export function RoomBookingPage() {
     }
   );
 
-  const floors = [...new Set(rooms.map(r => r.floor))].sort((a, b) => a - b);
-
-  const availableRooms = isFilterComplete
-    ? rooms
-        .filter(room => {
-          if (room.capacity < filter.attendees) return false;
-          if (!filter.equipment.every(eq => room.equipment.includes(eq))) return false;
-          if (filter.preferredFloor !== null && room.floor !== filter.preferredFloor) return false;
-          const hasConflict = reservations.some(
-            r => r.roomId === room.id && r.date === filter.date && r.start < filter.endTime && r.end > filter.startTime
-          );
-          if (hasConflict) return false;
-          return true;
-        })
-        .sort((a, b) => {
-          if (a.floor !== b.floor) return a.floor - b.floor;
-          return a.name.localeCompare(b.name);
-        })
-    : [];
+  const floors = getAvailableFloors(rooms);
+  const availableRooms = isFilterComplete ? findAvailableRooms(rooms, reservations, filter) : [];
 
   const handleBook = async () => {
     if (!selectedRoomId) {
